@@ -1,5 +1,6 @@
 package tn.amin.keyboard_gpt.ui;
 
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -26,27 +27,15 @@ import tn.amin.keyboard_gpt.llm.LanguageModelField;
 
 public class UiInteractor {
     public static final String ACTION_DIALOG_RESULT = "tn.amin.keyboard_gpt.DIALOG_RESULT";
-
     public static final String EXTRA_DIALOG_TYPE = "tn.amin.keyboard_gpt.overlay.DIALOG_TYPE";
-
     public static final String EXTRA_CONFIG_SELECTED_MODEL = "tn.amin.keyboard_gpt.config.SELECTED_MODEL";
-
     public static final String EXTRA_CONFIG_LANGUAGE_MODEL = "tn.amin.keyboard_gpt.config.model";
-
     public static final String EXTRA_CONFIG_LANGUAGE_MODEL_FIELD = "tn.amin.keyboard_gpt.config.model.%s";
-
-
     public static final String EXTRA_WEBVIEW_TITLE = "tn.amin.keyboard_gpt.webview.TITLE";
-
     public static final String EXTRA_WEBVIEW_URL = "tn.amin.keyboard_gpt.webview.URL";
-
-
     public static final String EXTRA_COMMAND_LIST = "tn.amin.keyboard_gpt.command.LIST";
-
     public static final String EXTRA_COMMAND_INDEX = "tn.amin.keyboard_gpt.command.INDEX";
-
     public static final String EXTRA_PATTERN_LIST = "tn.amin.keyboard_gpt.pattern.LIST";
-
     public static final String EXTRA_OTHER_SETTINGS = "tn.amin.keyboard_gpt.other_settings";
 
     private Context mContext = null;
@@ -57,7 +46,6 @@ public class UiInteractor {
     private long mLastDialogLaunch = 0L;
 
     private InputMethodService mInputMethodService;
-
     private IMSController mIMSController;
 
     private static UiInteractor instance = null;
@@ -111,7 +99,6 @@ public class UiInteractor {
                                 for (String modelName: bundle.keySet()) {
                                     LanguageModel configuredlanguageModel = LanguageModel.valueOf(modelName);
                                     Bundle languageModelBundle = bundle.getBundle(modelName);
-
                                     for (LanguageModelField field: LanguageModelField.values()) {
                                         if (languageModelBundle.containsKey(field.name)) {
                                             String fieldValue = languageModelBundle.getString(field.name);
@@ -153,7 +140,6 @@ public class UiInteractor {
         if (isDialogOnCooldown()) {
             return false;
         }
-
         MainHook.log("Launching configure dialog");
         mContext.startActivity(getOverlayIntent(DialogType.ChoseModel));
         return true;
@@ -163,14 +149,11 @@ public class UiInteractor {
         if (isDialogOnCooldown()) {
             return false;
         }
-
         Intent intent = getOverlayIntent(DialogType.WebSearch, false);
         intent.putExtra(EXTRA_WEBVIEW_TITLE, title);
         intent.putExtra(EXTRA_WEBVIEW_URL, url);
-
         MainHook.log("Launching web search");
         mContext.startActivity(intent);
-
         return true;
     }
 
@@ -178,10 +161,8 @@ public class UiInteractor {
         if (isDialogOnCooldown()) {
             return false;
         }
-
         MainHook.log("Launching commands edit");
         mContext.startActivity(getOverlayIntent(DialogType.EditCommandsList));
-
         return true;
     }
 
@@ -189,10 +170,17 @@ public class UiInteractor {
         if (isDialogOnCooldown()) {
             return false;
         }
-
         MainHook.log("Launching settings");
         mContext.startActivity(getOverlayIntent(DialogType.Settings));
+        return true;
+    }
 
+    public boolean showHelpDialog(String helpText) {
+        post(() -> new AlertDialog.Builder(mInputMethodService)
+                .setTitle("📖 KeyboardGPT Commands")
+                .setMessage(helpText)
+                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                .show());
         return true;
     }
 
@@ -207,7 +195,6 @@ public class UiInteractor {
         if (includeSp) {
             String rawCommands = SPManager.getInstance().getGenerativeAICommandsRaw();
             String rawPatterns = SPManager.getInstance().getParsePatternsRaw();
-
             intent.putExtra(EXTRA_COMMAND_LIST, rawCommands);
             intent.putExtra(EXTRA_PATTERN_LIST, rawPatterns);
             intent.putExtra(EXTRA_CONFIG_LANGUAGE_MODEL, mConfigInfoProvider.getConfigBundle());
@@ -216,7 +203,6 @@ public class UiInteractor {
             intent.putExtra(EXTRA_OTHER_SETTINGS,
                     mConfigInfoProvider.getOtherSettings());
         }
-
         return intent;
     }
 
@@ -242,7 +228,6 @@ public class UiInteractor {
             mInputMethodService = null;
         }
     }
-
 
     private boolean isDialogOnCooldown() {
         long currentTime = System.currentTimeMillis();
