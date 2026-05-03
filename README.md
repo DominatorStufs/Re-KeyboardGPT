@@ -56,7 +56,7 @@ https://github.com/user-attachments/assets/4cbf9088-0fb2-45d1-9a89-c0c72c1aff6e
 - Added **CodexAPI** — a completely **free** AI provider, no API key required!
 - Supports **35+ models** including GPT-5, Grok-4, DeepSeek, Gemini, Claude, Llama, Qwen, Mistral, and more
 - Model selection via dropdown — no need to remember model IDs
-- Based on: https://chatbot.codexapi.workers.dev
+- Based on: [Codexapi](https://chatbot.codexapi.workers.dev/docs)
 
 ### New Commands
 - `%tr <text>%` — Translate any language text to English automatically
