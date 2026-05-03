@@ -1,6 +1,5 @@
 package tn.amin.keyboard_gpt.ui;
 
-import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -9,7 +8,6 @@ import android.inputmethodservice.InputMethodService;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.view.WindowManager;
 import android.view.inputmethod.InputConnection;
 import android.widget.Toast;
 
@@ -38,6 +36,7 @@ public class UiInteractor {
     public static final String EXTRA_COMMAND_INDEX = "tn.amin.keyboard_gpt.command.INDEX";
     public static final String EXTRA_PATTERN_LIST = "tn.amin.keyboard_gpt.pattern.LIST";
     public static final String EXTRA_OTHER_SETTINGS = "tn.amin.keyboard_gpt.other_settings";
+    public static final String EXTRA_HELP_TEXT = "tn.amin.keyboard_gpt.help.TEXT";
 
     private Context mContext = null;
     private ConfigInfoProvider mConfigInfoProvider = null;
@@ -138,18 +137,14 @@ public class UiInteractor {
     };
 
     public boolean showChoseModelDialog() {
-        if (isDialogOnCooldown()) {
-            return false;
-        }
+        if (isDialogOnCooldown()) return false;
         MainHook.log("Launching configure dialog");
         mContext.startActivity(getOverlayIntent(DialogType.ChoseModel));
         return true;
     }
 
     public boolean showWebSearchDialog(String title, String url) {
-        if (isDialogOnCooldown()) {
-            return false;
-        }
+        if (isDialogOnCooldown()) return false;
         Intent intent = getOverlayIntent(DialogType.WebSearch, false);
         intent.putExtra(EXTRA_WEBVIEW_TITLE, title);
         intent.putExtra(EXTRA_WEBVIEW_URL, url);
@@ -159,38 +154,25 @@ public class UiInteractor {
     }
 
     public boolean showEditCommandsDialog() {
-        if (isDialogOnCooldown()) {
-            return false;
-        }
+        if (isDialogOnCooldown()) return false;
         MainHook.log("Launching commands edit");
         mContext.startActivity(getOverlayIntent(DialogType.EditCommandsList));
         return true;
     }
 
     public boolean showSettingsDialog() {
-        if (isDialogOnCooldown()) {
-            return false;
-        }
+        if (isDialogOnCooldown()) return false;
         MainHook.log("Launching settings");
         mContext.startActivity(getOverlayIntent(DialogType.Settings));
         return true;
     }
 
     public boolean showHelpDialog(String helpText) {
-        post(() -> {
-            try {
-                AlertDialog dialog = new AlertDialog.Builder(mInputMethodService)
-                        .setTitle("📖 KeyboardGPT Commands")
-                        .setMessage(helpText)
-                        .setPositiveButton("OK", (d, which) -> d.dismiss())
-                        .create();
-                dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
-                dialog.show();
-            } catch (Exception e) {
-                MainHook.log("Help dialog error: " + e.getMessage());
-                Toast.makeText(mContext, helpText, Toast.LENGTH_LONG).show();
-            }
-        });
+        if (isDialogOnCooldown()) return false;
+        Intent intent = getOverlayIntent(DialogType.Help, false);
+        intent.putExtra(EXTRA_HELP_TEXT, helpText);
+        MainHook.log("Launching help dialog");
+        mContext.startActivity(intent);
         return true;
     }
 
@@ -208,10 +190,8 @@ public class UiInteractor {
             intent.putExtra(EXTRA_COMMAND_LIST, rawCommands);
             intent.putExtra(EXTRA_PATTERN_LIST, rawPatterns);
             intent.putExtra(EXTRA_CONFIG_LANGUAGE_MODEL, mConfigInfoProvider.getConfigBundle());
-            intent.putExtra(EXTRA_CONFIG_SELECTED_MODEL,
-                    mConfigInfoProvider.getLanguageModel().name());
-            intent.putExtra(EXTRA_OTHER_SETTINGS,
-                    mConfigInfoProvider.getOtherSettings());
+            intent.putExtra(EXTRA_CONFIG_SELECTED_MODEL, mConfigInfoProvider.getLanguageModel().name());
+            intent.putExtra(EXTRA_OTHER_SETTINGS, mConfigInfoProvider.getOtherSettings());
         }
         return intent;
     }
@@ -272,4 +252,4 @@ public class UiInteractor {
     public InputMethodService getIMS() {
         return mInputMethodService;
     }
-        }
+    }
