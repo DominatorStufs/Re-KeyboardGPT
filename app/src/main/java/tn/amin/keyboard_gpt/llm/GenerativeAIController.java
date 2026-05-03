@@ -78,6 +78,10 @@ public class GenerativeAIController implements ConfigChangeListener {
     }
 
     public boolean needApiKey() {
+        // CodexAPI free hai - API key ki zarurat nahi!
+        if (mModelClient.getLanguageModel() == LanguageModel.CodexAPI) {
+            return false;
+        }
         return mModelClient.getApiKey() == null || mModelClient.getApiKey().isEmpty();
     }
 
@@ -110,7 +114,6 @@ public class GenerativeAIController implements ConfigChangeListener {
 
     @Override
     public void onPatternsChange(String patternsRaw) {
-
     }
 
     @Override
@@ -137,67 +140,4 @@ public class GenerativeAIController implements ConfigChangeListener {
     public void generateResponse(String prompt, String systemMessage) {
         MainHook.log("Getting response for text \"" + prompt + "\"");
 
-        if (prompt.isEmpty()) {
-            return;
-        }
-
-        mInteractor.post(() ->
-                mListeners.forEach(GenerativeAIListener::onAIPrepare));
-
-        Publisher<String> publisher;
-        if (needModelClient()) {
-            publisher = new SimpleStringPublisher("Missing API Key");
-        }
-        else {
-            publisher = mModelClient.submitPrompt(prompt, systemMessage);
-        }
-
-        publisher.subscribe(new Subscriber<String>() {
-            boolean completed = false;
-
-            @Override
-            public void onSubscribe(Subscription s) {
-                s.request(Long.MAX_VALUE);
-            }
-
-            @Override
-            public void onNext(String s) {
-                if (s == null || s.isEmpty()) {
-                    return;
-                }
-
-                MainHook.log("onNext: string with length " + s.length());
-
-                mInteractor.post(() -> mListeners.forEach(
-                        l -> l.onAINext(s)));
-            }
-
-            @Override
-            public void onError(Throwable t) {
-                MainHook.log(t);
-                onComplete();
-            }
-
-            @Override
-            public void onComplete() {
-                if (completed) {
-                    MainHook.log("Skipping duplicate onComplete");
-                    return;
-                }
-                completed = true;
-
-                mInteractor.post(() ->
-                        mListeners.forEach(GenerativeAIListener::onAIComplete));
-                MainHook.log("Done");
-            }
-        });
-    }
-
-    public LanguageModel getLanguageModel() {
-        return mModelClient.getLanguageModel();
-    }
-
-    public LanguageModelClient getModelClient() {
-        return mModelClient;
-    }
-}
+        if (prompt.isEmpty
