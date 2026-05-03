@@ -67,6 +67,7 @@ public class CodexAPIClient extends LanguageModelClient {
     private String extractResponse(String raw) {
         try {
             JSONObject json = new JSONObject(raw);
+            if (json.has("answer"))   return json.getString("answer");
             if (json.has("result"))   return json.getString("result");
             if (json.has("response")) return json.getString("response");
             if (json.has("text"))     return json.getString("text");
@@ -81,4 +82,4 @@ public class CodexAPIClient extends LanguageModelClient {
     public LanguageModel getLanguageModel() {
         return LanguageModel.CodexAPI;
     }
-                }
+}
