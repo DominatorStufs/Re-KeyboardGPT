@@ -3,21 +3,19 @@ package tn.amin.keyboard_gpt.llm.client;
 import org.json.JSONObject;
 import org.reactivestreams.Publisher;
 
-import java.io.InputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.stream.Collectors;
 
 import tn.amin.keyboard_gpt.llm.LanguageModel;
 import tn.amin.keyboard_gpt.llm.publisher.ExceptionPublisher;
-import tn.amin.keyboard_gpt.llm.publisher.InternetRequestPublisher;
 
 public class CodexAPIClient extends LanguageModelClient {
 
     @Override
     public Publisher<String> submitPrompt(String prompt, String systemMessage) {
-        // CodexAPI FREE hai - API key ki zarurat nahi!
         String model = getSubModel();
         if (model == null || model.isEmpty()) {
             model = "gpt-5";
@@ -30,32 +28,40 @@ public class CodexAPIClient extends LanguageModelClient {
             return new ExceptionPublisher(e);
         }
 
-        String url = "https://chatbot.codexapi.workers.dev/?prompt=" + encodedPrompt + "&model=" + model;
+        String urlStr = "https://chatbot.codexapi.workers.dev/?prompt=" + encodedPrompt + "&model=" + model;
 
-        HttpURLConnection con;
-        try {
-            con = (HttpURLConnection) new URL(url).openConnection();
-            con.setRequestMethod("GET");
-            con.setRequestProperty("Accept", "application/json");
-            con.setConnectTimeout(15000);
-            con.setReadTimeout(30000);
+        return subscriber -> {
+            new Thread(() -> {
+                try {
+                    HttpURLConnection con = (HttpURLConnection) new URL(urlStr).openConnection();
+                    con.setRequestMethod("GET");
+                    con.setRequestProperty("Accept", "application/json");
+                    con.setConnectTimeout(15000);
+                    con.setReadTimeout(30000);
 
-            InternetRequestPublisher publisher = new InternetRequestPublisher(
-                    (s, reader) -> {
-                        String response = reader.lines().collect(Collectors.joining(""));
-                        s.onNext(extractResponse(response));
-                    },
-                    (s, reader) -> {
-                        String response = reader.lines().collect(Collectors.joining(""));
-                        throw new IllegalArgumentException("CodexAPI Error: " + response);
-                    });
+                    int responseCode = con.getResponseCode();
+                    BufferedReader reader;
+                    if (responseCode == 200) {
+                        reader = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8));
+                    } else {
+                        reader = new BufferedReader(new InputStreamReader(con.getErrorStream(), StandardCharsets.UTF_8));
+                    }
 
-            InputStream inputStream = sendRequest(con, "", publisher);
-            publisher.setInputStream(inputStream);
-            return publisher;
-        } catch (Throwable t) {
-            return new ExceptionPublisher(t);
-        }
+                    StringBuilder sb = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        sb.append(line);
+                    }
+                    reader.close();
+
+                    String result = extractResponse(sb.toString());
+                    subscriber.onNext(result);
+                    subscriber.onComplete();
+                } catch (Exception e) {
+                    subscriber.onError(e);
+                }
+            }).start();
+        };
     }
 
     private String extractResponse(String raw) {
@@ -65,6 +71,8 @@ public class CodexAPIClient extends LanguageModelClient {
             if (json.has("response")) return json.getString("response");
             if (json.has("text"))     return json.getString("text");
             if (json.has("content"))  return json.getString("content");
+            if (json.has("message"))  return json.getString("message");
+            if (json.has("output"))   return json.getString("output");
         } catch (Exception ignored) {}
         return raw.trim();
     }
@@ -73,4 +81,4 @@ public class CodexAPIClient extends LanguageModelClient {
     public LanguageModel getLanguageModel() {
         return LanguageModel.CodexAPI;
     }
-}
+                }
