@@ -14,7 +14,8 @@ import tn.amin.keyboard_gpt.llm.LanguageModel;
 
 public class CommandManager implements ConfigChangeListener {
     private final static Map<String, AbstractCommand> STATIC_COMMAND_MAP = Map.of(
-            "s", new WebSearchCommand()
+            "s", new WebSearchCommand(),
+            "?", new HelpCommand()
     );
 
     private Map<String, AbstractCommand> commandMap;
@@ -38,14 +39,10 @@ public class CommandManager implements ConfigChangeListener {
     }
 
     @Override
-    public void onLanguageModelChange(LanguageModel model) {
-
-    }
+    public void onLanguageModelChange(LanguageModel model) {}
 
     @Override
-    public void onLanguageModelFieldChange(LanguageModel model, LanguageModelField field, String value) {
-
-    }
+    public void onLanguageModelFieldChange(LanguageModel model, LanguageModelField field, String value) {}
 
     @Override
     public void onCommandsChange(String commandsRaw) {
@@ -53,12 +50,8 @@ public class CommandManager implements ConfigChangeListener {
     }
 
     @Override
-    public void onPatternsChange(String patternsRaw) {
-
-    }
+    public void onPatternsChange(String patternsRaw) {}
 
     @Override
-    public void onOtherSettingsChange(Bundle otherSettings) {
-
-    }
+    public void onOtherSettingsChange(Bundle otherSettings) {}
 }
