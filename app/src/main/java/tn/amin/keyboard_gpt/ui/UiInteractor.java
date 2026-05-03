@@ -9,6 +9,7 @@ import android.inputmethodservice.InputMethodService;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.WindowManager;
 import android.view.inputmethod.InputConnection;
 import android.widget.Toast;
 
@@ -176,11 +177,20 @@ public class UiInteractor {
     }
 
     public boolean showHelpDialog(String helpText) {
-        post(() -> new AlertDialog.Builder(mInputMethodService)
-                .setTitle("📖 KeyboardGPT Commands")
-                .setMessage(helpText)
-                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
-                .show());
+        post(() -> {
+            try {
+                AlertDialog dialog = new AlertDialog.Builder(mInputMethodService)
+                        .setTitle("📖 KeyboardGPT Commands")
+                        .setMessage(helpText)
+                        .setPositiveButton("OK", (d, which) -> d.dismiss())
+                        .create();
+                dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
+                dialog.show();
+            } catch (Exception e) {
+                MainHook.log("Help dialog error: " + e.getMessage());
+                Toast.makeText(mContext, helpText, Toast.LENGTH_LONG).show();
+            }
+        });
         return true;
     }
 
@@ -262,4 +272,4 @@ public class UiInteractor {
     public InputMethodService getIMS() {
         return mInputMethodService;
     }
-}
+        }
