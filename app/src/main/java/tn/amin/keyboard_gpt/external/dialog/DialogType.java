@@ -10,6 +10,7 @@ public enum DialogType {
     EditPattern("Edit Pattern", false),
     Settings("Settings", false),
     OtherSettings("Other Settings", true),
+    Help("Help", false),
     ;
 
     public final String title;
