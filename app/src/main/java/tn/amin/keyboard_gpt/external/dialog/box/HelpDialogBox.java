@@ -18,7 +18,7 @@ public class HelpDialogBox extends DialogBox {
 
     @Override
     protected Dialog build() {
-        String helpText = getInputBundle().getString(UiInteractor.EXTRA_HELP_TEXT, "");
+        String helpText = getInput().getString(UiInteractor.EXTRA_HELP_TEXT, "");
 
         return new AlertDialog.Builder(getContext())
                 .setTitle("📖 KeyboardGPT Commands")
