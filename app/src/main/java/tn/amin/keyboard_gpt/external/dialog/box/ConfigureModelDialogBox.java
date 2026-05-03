@@ -17,6 +17,7 @@ import tn.amin.keyboard_gpt.R;
 import tn.amin.keyboard_gpt.external.ConfigContainer;
 import tn.amin.keyboard_gpt.external.dialog.DialogBoxManager;
 import tn.amin.keyboard_gpt.external.dialog.DialogType;
+import tn.amin.keyboard_gpt.llm.LanguageModel;
 import tn.amin.keyboard_gpt.llm.LanguageModelField;
 
 public class ConfigureModelDialogBox extends DialogBox {
@@ -45,6 +46,13 @@ public class ConfigureModelDialogBox extends DialogBox {
 
         Bundle tempModelConfig = new Bundle();
         for (LanguageModelField field: LanguageModelField.values()) {
+
+            // CodexAPI ke liye API Key field hide karo - free hai!
+            boolean isCodexAPI = getConfig().selectedModel == LanguageModel.CodexAPI;
+            if (isCodexAPI && field == LanguageModelField.ApiKey) {
+                continue;
+            }
+
             RelativeLayout fieldLayout = (RelativeLayout)
                     getParent().getLayoutInflater().inflate(R.layout.dialog_configure_model_field, layout, false);
             if (!field.advanced) {
@@ -62,14 +70,10 @@ public class ConfigureModelDialogBox extends DialogBox {
             fieldEdit.setText(fieldValue != null ? fieldValue : getConfig().selectedModel.getDefault(field));
             fieldEdit.addTextChangedListener(new TextWatcher() {
                 @Override
-                public void afterTextChanged(Editable s) {
-
-                }
+                public void afterTextChanged(Editable s) {}
 
                 @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-                }
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
                 @Override
                 public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -110,5 +114,4 @@ public class ConfigureModelDialogBox extends DialogBox {
                 })
                 .create();
     }
-
 }
