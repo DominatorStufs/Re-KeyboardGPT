@@ -84,9 +84,7 @@ public class KeyboardGPTBrain implements InputEventListener, GenerativeAIListene
                     String url = "https://duckduckgo.com/?q=" + commandParseResult.prompt;
                     UiInteractor.getInstance().showWebSearchDialog("Web Search", url);
                 } else if (command instanceof HelpCommand) {
-                    imsController.stopNotifyInput();
-                    imsController.commit(mCommandManager.getHelpText());
-                    imsController.startNotifyInput();
+                    UiInteractor.getInstance().showHelpDialog(mCommandManager.getHelpText());
                 }
             }
         } else if (parseResult instanceof SettingsParseResult) {
