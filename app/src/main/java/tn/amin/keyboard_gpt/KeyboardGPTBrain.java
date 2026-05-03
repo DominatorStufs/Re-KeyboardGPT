@@ -6,6 +6,7 @@ import tn.amin.keyboard_gpt.instruction.command.AbstractCommand;
 import tn.amin.keyboard_gpt.instruction.command.CommandManager;
 import tn.amin.keyboard_gpt.instruction.command.GenerativeAICommand;
 import tn.amin.keyboard_gpt.instruction.command.HelpCommand;
+import tn.amin.keyboard_gpt.instruction.command.TranslateCommand;
 import tn.amin.keyboard_gpt.instruction.command.WebSearchCommand;
 import tn.amin.keyboard_gpt.listener.DialogDismissListener;
 import tn.amin.keyboard_gpt.listener.GenerativeAIListener;
@@ -85,6 +86,9 @@ public class KeyboardGPTBrain implements InputEventListener, GenerativeAIListene
                     UiInteractor.getInstance().showWebSearchDialog("Web Search", url);
                 } else if (command instanceof HelpCommand) {
                     UiInteractor.getInstance().showHelpDialog(mCommandManager.getHelpText());
+                } else if (command instanceof TranslateCommand) {
+                    TranslateCommand translateCommand = (TranslateCommand) command;
+                    generateResponse(commandParseResult.prompt, translateCommand.getSystemMessage());
                 }
             }
         } else if (parseResult instanceof SettingsParseResult) {
