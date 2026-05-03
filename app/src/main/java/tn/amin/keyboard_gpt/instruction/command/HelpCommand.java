@@ -18,6 +18,11 @@ public class HelpCommand extends AbstractCommand {
             "❓  %?% — Show this help";
 
     @Override
+    public String getCommandPrefix() {
+        return "?";
+    }
+
+    @Override
     public void execute(String prompt) {
         UiInteractor.getInstance().getIMSController().commit(HELP_TEXT);
     }
