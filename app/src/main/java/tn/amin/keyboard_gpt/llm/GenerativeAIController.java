@@ -1,10 +1,6 @@
 package tn.amin.keyboard_gpt.llm;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-
-import androidx.core.content.ContextCompat;
 
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscriber;
@@ -88,7 +84,7 @@ public class GenerativeAIController implements ConfigChangeListener {
     private void setModel(LanguageModel model) {
         MainHook.log("setModel " + model.label);
         mModelClient = LanguageModelClient.forModel(model);
-        for (LanguageModelField field: LanguageModelField.values()) {
+        for (LanguageModelField field : LanguageModelField.values()) {
             mModelClient.setField(field, mSPManager.getLanguageModelField(model, field));
         }
         mModelClient.setInternetProvider(mInternetProvider);
@@ -140,4 +136,63 @@ public class GenerativeAIController implements ConfigChangeListener {
     public void generateResponse(String prompt, String systemMessage) {
         MainHook.log("Getting response for text \"" + prompt + "\"");
 
-        if (prompt.isEmpty
+        if (prompt.isEmpty()) {
+            return;
+        }
+
+        mInteractor.post(() ->
+                mListeners.forEach(GenerativeAIListener::onAIPrepare));
+
+        Publisher<String> publisher;
+        if (needModelClient()) {
+            publisher = new SimpleStringPublisher("Missing API Key");
+        } else {
+            publisher = mModelClient.submitPrompt(prompt, systemMessage);
+        }
+
+        publisher.subscribe(new Subscriber<String>() {
+            boolean completed = false;
+
+            @Override
+            public void onSubscribe(Subscription s) {
+                s.request(Long.MAX_VALUE);
+            }
+
+            @Override
+            public void onNext(String s) {
+                if (s == null || s.isEmpty()) {
+                    return;
+                }
+                MainHook.log("onNext: string with length " + s.length());
+                mInteractor.post(() -> mListeners.forEach(
+                        l -> l.onAINext(s)));
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                MainHook.log(t);
+                onComplete();
+            }
+
+            @Override
+            public void onComplete() {
+                if (completed) {
+                    MainHook.log("Skipping duplicate onComplete");
+                    return;
+                }
+                completed = true;
+                mInteractor.post(() ->
+                        mListeners.forEach(GenerativeAIListener::onAIComplete));
+                MainHook.log("Done");
+            }
+        });
+    }
+
+    public LanguageModel getLanguageModel() {
+        return mModelClient.getLanguageModel();
+    }
+
+    public LanguageModelClient getModelClient() {
+        return mModelClient;
+    }
+}
