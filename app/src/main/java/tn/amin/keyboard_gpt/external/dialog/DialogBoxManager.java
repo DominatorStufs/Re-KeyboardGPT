@@ -9,6 +9,7 @@ import tn.amin.keyboard_gpt.external.dialog.box.CommandEditDialogBox;
 import tn.amin.keyboard_gpt.external.dialog.box.CommandListDialogBox;
 import tn.amin.keyboard_gpt.external.dialog.box.ConfigureModelDialogBox;
 import tn.amin.keyboard_gpt.external.dialog.box.DialogBox;
+import tn.amin.keyboard_gpt.external.dialog.box.HelpDialogBox;
 import tn.amin.keyboard_gpt.external.dialog.box.OtherSettingsDialogBox;
 import tn.amin.keyboard_gpt.external.dialog.box.PatternEditDialogBox;
 import tn.amin.keyboard_gpt.external.dialog.box.PatternListDialogBox;
@@ -60,6 +61,9 @@ public class DialogBoxManager {
                 break;
             case OtherSettings:
                 box = new OtherSettingsDialogBox(this, mParent, mInputBundle, mConfig);
+                break;
+            case Help:
+                box = new HelpDialogBox(this, mParent, mInputBundle, mConfig);
                 break;
             case Settings:
             default:
