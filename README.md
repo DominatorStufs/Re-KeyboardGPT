@@ -89,8 +89,21 @@ https://github.com/user-attachments/assets/4cbf9088-0fb2-45d1-9a89-c0c72c1aff6e
 3. Force close the keyboard from settings, or restart your phone
 
 #### No Root
-1. Install module APK
-2. Patch your favorite keyboard APK in LSPatch Manager and follow the instructions
+1. Install module apk from [releases](https://github.com/Mino260806/KeyboardGPT/releases/)
+2. Patch your favorite keyboard apk in LSPatch Manager and follow the instructions
+
+<details>  
+  <summary>Video : Using LSPatch (No Root)</summary>  
+
+
+https://github.com/user-attachments/assets/ebacb5e4-08fb-45ff-8dcd-4d9b8f9232a0
+
+
+
+</details>
+
+Note: With *No Root* method, you cannot patch a system app (Mostly Gboard or Samsung Keyboard, depending on your system).
+
 
 ## Usage Guide
 
