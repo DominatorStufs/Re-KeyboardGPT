@@ -11,6 +11,7 @@ public enum LanguageModel {
     OpenRouter("OpenRouter", "openai/gpt-oss-20b:free", "https://openrouter.ai/api/v1"),
     Claude("Claude", "claude-3-5-sonnet-20240620", "https://api.anthropic.com/v1"),
     Mistral("Mistral", "mistral-small-latest", "https://api.mistral.ai/v1"),
+    CodexAPI("CodexAPI", "gpt-5", "https://chatbot.codexapi.workers.dev"),
     ;
 
     public final String label;
