@@ -13,6 +13,20 @@ import tn.amin.keyboard_gpt.listener.ConfigChangeListener;
 import tn.amin.keyboard_gpt.llm.LanguageModel;
 
 public class CommandManager implements ConfigChangeListener {
+    private static final String HELP_TEXT =
+            "📖 KeyboardGPT Commands:\n\n" +
+            "⚙️  *#settings#* — Open settings\n\n" +
+            "🤖  $<prompt>$ — Send AI prompt\n\n" +
+            "🔧  $$ — Configure AI model\n\n" +
+            "✏️  %<prefix> <prompt>% — Custom prompt\n\n" +
+            "📝  %% — Configure custom prompts\n\n" +
+            "🔍  %s <text>% — Web search\n\n" +
+            "𝘐  |<text>| — Italic text\n\n" +
+            "𝗕  @<text>@ — Bold text\n\n" +
+            "~~  ~<text>~ — Strikethrough\n\n" +
+            "U  _<text>_ — Underline\n\n" +
+            "❓  %?% — Show this help";
+
     private final static Map<String, AbstractCommand> STATIC_COMMAND_MAP = Map.of(
             "s", new WebSearchCommand(),
             "?", new HelpCommand()
@@ -22,7 +36,6 @@ public class CommandManager implements ConfigChangeListener {
 
     public CommandManager() {
         UiInteractor.getInstance().registerConfigChangeListener(this);
-
         List<GenerativeAICommand> aiCommands = SPManager.getInstance().getGenerativeAICommands();
         updateCommandMap(aiCommands);
     }
@@ -36,6 +49,10 @@ public class CommandManager implements ConfigChangeListener {
 
     public AbstractCommand get(String prefix) {
         return commandMap.get(prefix);
+    }
+
+    public String getHelpText() {
+        return HELP_TEXT;
     }
 
     @Override
