@@ -21,6 +21,7 @@ public class CommandManager implements ConfigChangeListener {
             "✏️  %<prefix> <prompt>% — Custom prompt\n\n" +
             "📝  %% — Configure custom prompts\n\n" +
             "🔍  %s <text>% — Web search\n\n" +
+            "🌐  %tr <text>% — Translate to English\n\n" +
             "𝘐  |<text>| — Italic text\n\n" +
             "𝗕  @<text>@ — Bold text\n\n" +
             "~~  ~<text>~ — Strikethrough\n\n" +
@@ -29,7 +30,8 @@ public class CommandManager implements ConfigChangeListener {
 
     private final static Map<String, AbstractCommand> STATIC_COMMAND_MAP = Map.of(
             "s", new WebSearchCommand(),
-            "?", new HelpCommand()
+            "?", new HelpCommand(),
+            "tr", new TranslateCommand()
     );
 
     private Map<String, AbstractCommand> commandMap;
