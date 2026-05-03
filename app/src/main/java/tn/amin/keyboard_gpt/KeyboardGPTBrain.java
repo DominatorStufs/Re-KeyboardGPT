@@ -5,6 +5,7 @@ import android.content.Context;
 import tn.amin.keyboard_gpt.instruction.command.AbstractCommand;
 import tn.amin.keyboard_gpt.instruction.command.CommandManager;
 import tn.amin.keyboard_gpt.instruction.command.GenerativeAICommand;
+import tn.amin.keyboard_gpt.instruction.command.HelpCommand;
 import tn.amin.keyboard_gpt.instruction.command.WebSearchCommand;
 import tn.amin.keyboard_gpt.listener.DialogDismissListener;
 import tn.amin.keyboard_gpt.listener.GenerativeAIListener;
@@ -42,7 +43,6 @@ public class KeyboardGPTBrain implements InputEventListener, GenerativeAIListene
 
     @Override
     public void onTextUpdate(String text, int cursor) {
-//        MainHook.log("[IMSController] User typed \"" + text + "\"");
         IMSController imsController = UiInteractor.getInstance().getIMSController();
         ParseResult result = mTextParser.parse(text, cursor);
         if (result != null) {
@@ -80,9 +80,13 @@ public class KeyboardGPTBrain implements InputEventListener, GenerativeAIListene
                 if (command instanceof GenerativeAICommand) {
                     GenerativeAICommand genAICommand = (GenerativeAICommand) command;
                     generateResponse(commandParseResult.prompt, genAICommand.getTweakMessage());
-                } else if (command instanceof WebSearchCommand){
+                } else if (command instanceof WebSearchCommand) {
                     String url = "https://duckduckgo.com/?q=" + commandParseResult.prompt;
                     UiInteractor.getInstance().showWebSearchDialog("Web Search", url);
+                } else if (command instanceof HelpCommand) {
+                    imsController.stopNotifyInput();
+                    imsController.commit(mCommandManager.getHelpText());
+                    imsController.startNotifyInput();
                 }
             }
         } else if (parseResult instanceof SettingsParseResult) {
@@ -114,17 +118,14 @@ public class KeyboardGPTBrain implements InputEventListener, GenerativeAIListene
         MainHook.log("[Brain] ONPREPARE");
         IMSController.getInstance().flush();
         IMSController.getInstance().commit(STR_GENERATING_CONTENT);
-
         IMSController.getInstance().stopNotifyInput();
         IMSController.getInstance().startInputLock();
-
         justPrepared = true;
     }
 
     private void clearGeneratingContent() {
         if (justPrepared) {
             justPrepared = false;
-
             IMSController.getInstance().flush();
             IMSController.getInstance().delete(STR_GENERATING_CONTENT.length());
         }
