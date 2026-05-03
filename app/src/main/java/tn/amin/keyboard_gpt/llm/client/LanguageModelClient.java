@@ -82,6 +82,8 @@ public abstract class LanguageModelClient {
                 return new ClaudeClient();
             case Mistral:
                 return new MistralClient();
+            case CodexAPI:
+                return new CodexAPIClient();
             case ChatGPT:
             default:
                 return new ChatGPTClient();
