@@ -71,24 +71,28 @@ public abstract class LanguageModelClient {
     }
 
     public static LanguageModelClient forModel(LanguageModel model) {
-        switch (model) {
-            case Gemini:
-                return new GeminiClient();
-            case Groq:
-                return new GroqClient();
-            case OpenRouter:
-                return new OpenRouterClient();
-            case Claude:
-                return new ClaudeClient();
-            case Mistral:
-                return new MistralClient();
-            case CodexAPI:
-                return new CodexAPIClient();
-            case ChatGPT:
-            default:
-                return new ChatGPTClient();
-        }
+    switch (model) {
+        case Gemini:
+            return new GeminiClient();
+        case Groq:
+            return new GroqClient();
+        case OpenRouter:
+            return new OpenRouterClient();
+        case Claude:
+            return new ClaudeClient();
+        case Mistral:
+            return new MistralClient();
+        case CodexAPI:
+            return new CodexAPIClient();
+        case Pollinations:
+            return new PollinationsClient();
+        case ChatGPT:
+        default:
+            return new ChatGPTClient();
+        case Pollinations:
+            return new PollinationsClient();
     }
+}
 
     static Publisher<String> MISSING_API_KEY_PUBLISHER = subscriber -> {
         subscriber.onNext("Missing API Key");
