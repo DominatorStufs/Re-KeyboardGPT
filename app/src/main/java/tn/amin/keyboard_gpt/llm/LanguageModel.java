@@ -12,6 +12,7 @@ public enum LanguageModel {
     Claude("Claude", "claude-3-5-sonnet-20240620", "https://api.anthropic.com/v1"),
     Mistral("Mistral", "mistral-small-latest", "https://api.mistral.ai/v1"),
     CodexAPI("CodexAPI", "gpt-5", "https://chatbot.codexapi.workers.dev"),
+    Pollinations("Pollinations", "openai", "https://text.pollinations.ai"),
     ;
 
     public final String label;
