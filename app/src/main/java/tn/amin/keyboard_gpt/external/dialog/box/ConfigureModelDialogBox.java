@@ -25,45 +25,40 @@ import tn.amin.keyboard_gpt.llm.LanguageModelField;
 
 public class ConfigureModelDialogBox extends DialogBox {
 
-    // CodexAPI ke saare models
     private static final String[] CODEX_MODELS = {
-        "gpt-5",
-        "gpt-5.1",
-        "gpt-5.2",
-        "chatgpt-4o-latest",
-        "o1-preview",
-        "o3-mini",
+        "gpt-5", "gpt-5.1", "gpt-5.2",
+        "chatgpt-4o-latest", "o1-preview", "o3-mini",
         "anthropic/claude-sonnet-4",
         "google/gemini-2.5-pro-preview-05-06",
         "x-ai/grok-4",
-        "deepseek-ai/deepseek-v3.2",
-        "deepseek-ai/deepseek-v3.1-terminus",
-        "deepseek-ai/deepseek-R1-0528",
-        "qwen/qwen3-235b-a22b",
-        "qwen/qwq-32b",
-        "qwen/qwen3.5-397b-a17b",
-        "qwen/qwen3-coder-480b-a35b-instruct",
-        "moonshotai/kimi-k2.5",
-        "moonshotai/kimi-k2-thinking",
-        "moonshotai/kimi-k2-instruct-0905",
+        "deepseek-ai/deepseek-v3.2", "deepseek-ai/deepseek-R1-0528",
         "meta/llama-4-maverick-17b-128e-instruct",
         "meta/llama-4-scout-17b-16e-instruct",
         "meta-llama-3.3-70b-instruct",
-        "meta-llama-3.1-8b-instruct",
-        "meta/llama-3.1-405b-instruct",
-        "openai/gpt-oss-120b",
-        "openai/gpt-oss-20b",
+        "qwen/qwen3-235b-a22b", "qwen/qwq-32b",
+        "moonshotai/kimi-k2-instruct-0905", "moonshotai/kimi-k2-thinking",
         "mistralai/mistral-large-3-675b-instruct-2512",
         "mistralai/magistral-small-2506",
-        "mistralai/mistral-small-3.1-24b-instruct-2503",
-        "mistralai/ministral-14b-instruct-2512",
-        "google/gemma-3-27b-it",
-        "nvidia/nemotron-3-nano-30b-a3b",
-        "minimaxai/minimax-m2",
-        "mercury-coder",
-        "Olmo-3.1-32B-Instruct",
-        "accounts/fireworks/models/glm-4p7",
-        "meta-llama/Llama-3.1-8B-Instruct"
+        "mercury-coder", "nvidia/nemotron-3-nano-30b-a3b",
+        "minimaxai/minimax-m2"
+    };
+
+    private static final String[] POLLINATIONS_MODELS = {
+        "openai",
+        "openai-large",
+        "openai-reasoning",
+        "qwen-coder",
+        "llama",
+        "llamalight",
+        "gemini",
+        "gemini-thinking",
+        "deepseek",
+        "deepseek-r1",
+        "mistral",
+        "mistral-large",
+        "searchgpt",
+        "phi",
+        "claude-hybridspace"
     };
 
     public ConfigureModelDialogBox(DialogBoxManager dialogManager, Activity parent,
@@ -90,24 +85,24 @@ public class ConfigureModelDialogBox extends DialogBox {
                 getParent().getLayoutInflater().inflate(R.layout.dialog_configure_model_advanced, null);
 
         Bundle tempModelConfig = new Bundle();
+
         boolean isCodexAPI = getConfig().selectedModel == LanguageModel.CodexAPI;
+        boolean isPollinations = getConfig().selectedModel == LanguageModel.Pollinations;
 
         for (LanguageModelField field : LanguageModelField.values()) {
 
-            // CodexAPI ke liye API Key hide karo
-            if (isCodexAPI && field == LanguageModelField.ApiKey) {
+            // Free models ke liye API Key hide karo
+            if ((isCodexAPI || isPollinations) && field == LanguageModelField.ApiKey) {
                 continue;
             }
 
-            // CodexAPI ke liye SubModel dropdown banao
+            // CodexAPI ke liye SubModel dropdown
             if (isCodexAPI && field == LanguageModelField.SubModel) {
-                // Label
                 TextView label = new TextView(getContext());
                 label.setText("Sub Model");
                 label.setPadding(16, 24, 16, 8);
                 layout.addView(label);
 
-                // Spinner (dropdown)
                 Spinner spinner = new Spinner(getContext());
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(
                         getContext(),
@@ -117,7 +112,6 @@ public class ConfigureModelDialogBox extends DialogBox {
                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinner.setAdapter(adapter);
 
-                // Current selected model set karo
                 String currentModel = modelConfig.getString(field.name);
                 if (currentModel == null) currentModel = "gpt-5";
                 for (int i = 0; i < CODEX_MODELS.length; i++) {
@@ -131,6 +125,45 @@ public class ConfigureModelDialogBox extends DialogBox {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                         tempModelConfig.putString(field.name, CODEX_MODELS[position]);
+                    }
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {}
+                });
+
+                spinner.setPadding(16, 8, 16, 16);
+                layout.addView(spinner);
+                continue;
+            }
+
+            // Pollinations ke liye SubModel dropdown
+            if (isPollinations && field == LanguageModelField.SubModel) {
+                TextView label = new TextView(getContext());
+                label.setText("Sub Model");
+                label.setPadding(16, 24, 16, 8);
+                layout.addView(label);
+
+                Spinner spinner = new Spinner(getContext());
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                        getContext(),
+                        android.R.layout.simple_spinner_item,
+                        POLLINATIONS_MODELS
+                );
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinner.setAdapter(adapter);
+
+                String currentModel = modelConfig.getString(field.name);
+                if (currentModel == null) currentModel = "openai";
+                for (int i = 0; i < POLLINATIONS_MODELS.length; i++) {
+                    if (POLLINATIONS_MODELS[i].equals(currentModel)) {
+                        spinner.setSelection(i);
+                        break;
+                    }
+                }
+
+                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        tempModelConfig.putString(field.name, POLLINATIONS_MODELS[position]);
                     }
                     @Override
                     public void onNothingSelected(AdapterView<?> parent) {}
