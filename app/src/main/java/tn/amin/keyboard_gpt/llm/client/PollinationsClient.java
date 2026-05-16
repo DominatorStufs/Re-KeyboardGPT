@@ -1,6 +1,5 @@
 package tn.amin.keyboard_gpt.llm.client;
 
-import org.json.JSONObject;
 import org.reactivestreams.Publisher;
 
 import java.io.BufferedReader;
@@ -14,21 +13,20 @@ import tn.amin.keyboard_gpt.llm.publisher.ExceptionPublisher;
 
 public class PollinationsClient extends LanguageModelClient {
 
-    // Available models on Pollinations (free, no API key needed for basic use)
     public static final String[] AVAILABLE_MODELS = {
-        "openai",           // GPT-4o
-        "openai-large",     // GPT-4o Large
-        "openai-reasoning", // o1 reasoning
+        "openai",
+        "openai-large",
+        "openai-reasoning",
         "openai-roblox",
-        "qwen-coder",       // Qwen Coder
-        "llama",            // Llama 3.3 70B
-        "llamalight",       // Llama 3.1 8B
+        "qwen-coder",
+        "llama",
+        "llamalight",
         "llamaguard",
-        "gemini",           // Gemini 2.0 Flash
-        "gemini-thinking",  // Gemini 2.0 Flash Thinking
-        "deepseek",         // DeepSeek V3
-        "deepseek-r1",      // DeepSeek R1
-        "mistral",          // Mistral Small
+        "gemini",
+        "gemini-thinking",
+        "deepseek",
+        "deepseek-r1",
+        "mistral",
         "mistral-large",
         "midijourney",
         "rtist",
@@ -58,7 +56,6 @@ public class PollinationsClient extends LanguageModelClient {
 
         String urlStr = "https://text.pollinations.ai/" + encodedPrompt
                 + "?model=" + model
-                + "&seed=-1"
                 + (encodedSystem.isEmpty() ? "" : "&system=" + encodedSystem);
 
         return subscriber -> {
