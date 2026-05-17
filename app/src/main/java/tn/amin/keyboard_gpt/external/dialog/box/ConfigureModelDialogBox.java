@@ -43,20 +43,6 @@ public class ConfigureModelDialogBox extends DialogBox {
         "minimaxai/minimax-m2"
     };
 
-    private static final String[] POLLINATIONS_MODELS = {
-    "openai",
-    "openai-large",
-    "openai-reasoning",
-    "llama",
-    "llamalight",
-    "gemini",
-    "gemini-thinking",
-    "deepseek",
-    "deepseek-r1",
-    "mistral",
-    "qwen-coder"
-};
-
     public ConfigureModelDialogBox(DialogBoxManager dialogManager, Activity parent,
                                    Bundle inputBundle, ConfigContainer configContainer) {
         super(dialogManager, parent, inputBundle, configContainer);
@@ -81,14 +67,12 @@ public class ConfigureModelDialogBox extends DialogBox {
                 getParent().getLayoutInflater().inflate(R.layout.dialog_configure_model_advanced, null);
 
         Bundle tempModelConfig = new Bundle();
-
         boolean isCodexAPI = getConfig().selectedModel == LanguageModel.CodexAPI;
-        boolean isPollinations = getConfig().selectedModel == LanguageModel.Pollinations;
 
         for (LanguageModelField field : LanguageModelField.values()) {
 
-            // Free models ke liye API Key hide karo
-            if ((isCodexAPI || isPollinations) && field == LanguageModelField.ApiKey) {
+            // CodexAPI ke liye API Key hide karo
+            if (isCodexAPI && field == LanguageModelField.ApiKey) {
                 continue;
             }
 
@@ -121,45 +105,6 @@ public class ConfigureModelDialogBox extends DialogBox {
                     @Override
                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                         tempModelConfig.putString(field.name, CODEX_MODELS[position]);
-                    }
-                    @Override
-                    public void onNothingSelected(AdapterView<?> parent) {}
-                });
-
-                spinner.setPadding(16, 8, 16, 16);
-                layout.addView(spinner);
-                continue;
-            }
-
-            // Pollinations ke liye SubModel dropdown
-            if (isPollinations && field == LanguageModelField.SubModel) {
-                TextView label = new TextView(getContext());
-                label.setText("Sub Model");
-                label.setPadding(16, 24, 16, 8);
-                layout.addView(label);
-
-                Spinner spinner = new Spinner(getContext());
-                ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                        getContext(),
-                        android.R.layout.simple_spinner_item,
-                        POLLINATIONS_MODELS
-                );
-                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spinner.setAdapter(adapter);
-
-                String currentModel = modelConfig.getString(field.name);
-                if (currentModel == null) currentModel = "openai";
-                for (int i = 0; i < POLLINATIONS_MODELS.length; i++) {
-                    if (POLLINATIONS_MODELS[i].equals(currentModel)) {
-                        spinner.setSelection(i);
-                        break;
-                    }
-                }
-
-                spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                    @Override
-                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                        tempModelConfig.putString(field.name, POLLINATIONS_MODELS[position]);
                     }
                     @Override
                     public void onNothingSelected(AdapterView<?> parent) {}
