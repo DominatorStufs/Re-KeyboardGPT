@@ -59,32 +59,31 @@ jobs:
     - name: Rename APK
       run: |
         APK_FILE=$(find app/build/outputs/apk/debug -name "*.apk" | head -n 1)
-        mv "$APK_FILE" "app/build/outputs/apk/debug/Re-KeyboardGPT-v${{ steps.version.outputs.VERSION_NAME }}.apk"
+        mv "$APK_FILE" "app/build/outputs/apk/debug/Re-KeyboardGPT-v${{ steps.version.outputs.VERSION_NAME }}-build${{ github.run_number }}.apk"
 
     - name: Upload APK Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: Re-KeyboardGPT-v${{ steps.version.outputs.VERSION_NAME }}
-        path: app/build/outputs/apk/debug/Re-KeyboardGPT-v${{ steps.version.outputs.VERSION_NAME }}.apk
+        name: Re-KeyboardGPT-v${{ steps.version.outputs.VERSION_NAME }}-build${{ github.run_number }}
+        path: app/build/outputs/apk/debug/Re-KeyboardGPT-v${{ steps.version.outputs.VERSION_NAME }}-build${{ github.run_number }}.apk
 
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v2
       with:
-        tag_name: v${{ steps.version.outputs.VERSION_NAME }}
-        name: Re-KeyboardGPT v${{ steps.version.outputs.VERSION_NAME }}
+        tag_name: v${{ steps.version.outputs.VERSION_NAME }}-build${{ github.run_number }}
+        name: Re-KeyboardGPT v${{ steps.version.outputs.VERSION_NAME }} (Build ${{ github.run_number }})
         body: |
           # Re-KeyboardGPT v${{ steps.version.outputs.VERSION_NAME }}
 
-          [
+          [![Build Status](https://img.shields.io/github/actions/workflow/status/DominatorStufs/Re-KeyboardGPT/build.yml?style=flat-square)](https://github.com/DominatorStufs/Re-KeyboardGPT/actions)
+          [![Platform](https://img.shields.io/badge/Platform-Android-3DDC84?style=flat-square&logo=android&logoColor=white)](https://developer.android.com)
 
-![Build Status](https://img.shields.io/github/actions/workflow/status/DominatorStufs/Re-KeyboardGPT/build.yml?style=flat-square)
+          ---
 
-](https://github.com/DominatorStufs/Re-KeyboardGPT/actions)
-          [
-
-![Platform](https://img.shields.io/badge/Platform-Android-3DDC84?style=flat-square&logo=android&logoColor=white)
-
-](https://developer.android.com)
+          ### Build Information
+          - **Build Number:** `${{ github.run_number }}`
+          - **Commit:** `${{ github.sha }}`
+          - **Branch:** `${{ github.ref_name }}`
 
           ---
 
@@ -108,9 +107,9 @@ jobs:
           |---|---|
           | `$$` | Configure AI model |
           | `$<prompt>$` | Send AI prompt |
-          | `%tr <text>%` | Translate to English |
+          | `%tr <text>%` | Translate to English NEW |
           | `%s <text>%` | Web search |
-          | `%?%` | Show help |
+          | `%?%` | Show help NEW |
           | `\|text\|` | Italic |
           | `@text@` | Bold |
           | `~text~` | Strikethrough |
@@ -122,6 +121,12 @@ jobs:
         draft: false
         prerelease: false
         files: |
-          app/build/outputs/apk/debug/Re-KeyboardGPT-v${{ steps.version.outputs.VERSION_NAME }}.apk
+          app/build/outputs/apk/debug/Re-KeyboardGPT-v${{ steps.version.outputs.VERSION_NAME }}-build${{ github.run_number }}.apk
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: KeyboardGPT-debug
+        path: app/build/outputs/apk/debug/*.apk
+        
