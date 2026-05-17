@@ -75,53 +75,43 @@ jobs:
         body: |
           # Re-KeyboardGPT v${{ steps.version.outputs.VERSION_NAME }}
 
-          [
-
-![Build Status](https://img.shields.io/github/actions/workflow/status/DominatorStufs/Re-KeyboardGPT/build.yml?style=flat-square)
-
-](https://github.com/DominatorStufs/Re-KeyboardGPT/actions)
-          [
-
-![Platform](https://img.shields.io/badge/Platform-Android-3DDC84?style=flat-square&logo=android&logoColor=white)
-
-](https://developer.android.com)
+          [![Build Status](https://img.shields.io/github/actions/workflow/status/DominatorStufs/Re-KeyboardGPT/build.yml?style=flat-square)](https://github.com/DominatorStufs/Re-KeyboardGPT/actions) [![Platform](https://img.shields.io/badge/Platform-Android-3DDC84?style=flat-square&logo=android&logoColor=white)](https://developer.android.com)
 
           ---
 
           ### What's New in This Fork
-          - ✅ **CodexAPI** — Free AI, no API key needed!
-          - ✅ **35+ Models** — GPT-5, Grok-4, DeepSeek, Gemini, Claude & more
-          - ✅ `%tr <text>%` — Translate any language to English
-          - ✅ `%?%` — Show all commands popup
+          - CodexAPI — Free AI, no API key needed!
+          - 35+ Models — GPT-5, Grok-4, DeepSeek, Gemini, Claude and more
+          - %tr text% — Translate any language to English
+          - %?% — Show all commands popup
 
           ---
 
           ### How to Install
           1. Download APK below
-          2. Enable in **LSPosed** and select your keyboard
+          2. Enable in LSPosed and select your keyboard
           3. Restart phone
 
           ---
 
           ### Commands
-          | Command | Description |
-          |---|---|
-          | `$$` | Configure AI model |
-          | `$<prompt>$` | Send AI prompt |
-          | `%tr <text>%` | Translate to English |
-          | `%s <text>%` | Web search |
-          | `%?%` | Show help |
-          | `\|text\|` | Italic |
-          | `@text@` | Bold |
-          | `~text~` | Strikethrough |
-          | `_text_` | Underline |
+          - $$ — Configure AI model
+          - $prompt$ — Send AI prompt
+          - %tr text% — Translate to English
+          - %s text% — Web search
+          - %?% — Show help
+          - |text| — Italic
+          - @text@ — Bold
+          - ~text~ — Strikethrough
+          - _text_ — Underline
 
           ---
 
-          > Original project: [KeyboardGPT](https://github.com/Mino260806/KeyboardGPT) by Mino260806
+          Original project: https://github.com/Mino260806/KeyboardGPT by Mino260806
         draft: false
         prerelease: false
         files: |
           app/build/outputs/apk/debug/Re-KeyboardGPT-v${{ steps.version.outputs.VERSION_NAME }}.apk
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
