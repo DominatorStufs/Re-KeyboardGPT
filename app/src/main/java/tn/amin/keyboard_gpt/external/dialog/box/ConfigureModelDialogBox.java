@@ -44,22 +44,18 @@ public class ConfigureModelDialogBox extends DialogBox {
     };
 
     private static final String[] POLLINATIONS_MODELS = {
-        "openai",
-        "openai-large",
-        "openai-reasoning",
-        "qwen-coder",
-        "llama",
-        "llamalight",
-        "gemini",
-        "gemini-thinking",
-        "deepseek",
-        "deepseek-r1",
-        "mistral",
-        "mistral-large",
-        "searchgpt",
-        "phi",
-        "claude-hybridspace"
-    };
+    "openai",
+    "openai-large",
+    "openai-reasoning",
+    "llama",
+    "llamalight",
+    "gemini",
+    "gemini-thinking",
+    "deepseek",
+    "deepseek-r1",
+    "mistral",
+    "qwen-coder"
+};
 
     public ConfigureModelDialogBox(DialogBoxManager dialogManager, Activity parent,
                                    Bundle inputBundle, ConfigContainer configContainer) {
