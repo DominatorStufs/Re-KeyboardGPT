@@ -84,8 +84,6 @@ public abstract class LanguageModelClient {
                 return new MistralClient();
             case CodexAPI:
                 return new CodexAPIClient();
-            case Pollinations:
-                return new PollinationsClient();
             case ChatGPT:
             default:
                 return new ChatGPTClient();
