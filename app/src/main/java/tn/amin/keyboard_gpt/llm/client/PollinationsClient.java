@@ -14,27 +14,18 @@ import tn.amin.keyboard_gpt.llm.publisher.ExceptionPublisher;
 public class PollinationsClient extends LanguageModelClient {
 
     public static final String[] AVAILABLE_MODELS = {
-        "openai",
-        "openai-large",
-        "openai-reasoning",
-        "openai-roblox",
-        "qwen-coder",
-        "llama",
-        "llamalight",
-        "llamaguard",
-        "gemini",
-        "gemini-thinking",
-        "deepseek",
-        "deepseek-r1",
-        "mistral",
-        "mistral-large",
-        "midijourney",
-        "rtist",
-        "searchgpt",
-        "evil",
-        "phi",
-        "claude-hybridspace"
-    };
+    "openai",           // GPT-4o (Default)
+    "openai-large",     // GPT-4o Large
+    "openai-reasoning", // o1 Reasoning
+    "llama",            // Llama 3.3 70B
+    "llamalight",       // Llama 3.1 8B
+    "gemini",           // Gemini 2.0 Flash
+    "gemini-thinking",  // Gemini 2.0 Thinking
+    "deepseek",         // DeepSeek V3
+    "deepseek-r1",      // DeepSeek R1
+    "mistral",          // Mistral Small
+    "qwen-coder"        // Qwen Coder
+};
 
     @Override
     public Publisher<String> submitPrompt(String prompt, String systemMessage) {
