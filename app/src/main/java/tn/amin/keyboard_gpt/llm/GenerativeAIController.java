@@ -74,9 +74,8 @@ public class GenerativeAIController implements ConfigChangeListener {
     }
 
     public boolean needApiKey() {
-        // CodexAPI aur Pollinations free hain - API key ki zarurat nahi!
-        if (mModelClient.getLanguageModel() == LanguageModel.CodexAPI ||
-            mModelClient.getLanguageModel() == LanguageModel.Pollinations) {
+        // CodexAPI free hai - API key ki zarurat nahi!
+        if (mModelClient.getLanguageModel() == LanguageModel.CodexAPI) {
             return false;
         }
         return mModelClient.getApiKey() == null || mModelClient.getApiKey().isEmpty();
